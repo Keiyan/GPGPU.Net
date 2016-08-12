@@ -17,6 +17,7 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
     <Text Include="kargerMinCut.txt" />
+    <Text Include="Test.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -26,6 +27,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MinCutProblem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rnd\amp_rand_collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rnd\amp_sobol_rng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rnd\amp_tinymt_rng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rnd\xxamp_sobol_rng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rnd\xxamp_tinymt_precalc_dc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

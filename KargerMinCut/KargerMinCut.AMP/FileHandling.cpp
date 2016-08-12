@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "MinCutProblem.h"
 
-std::multiset<int>* ReadFile(const char * fileName)
+std::multiset<int>* ReadFile(const char * fileName, size_t amountOfNodes)
 {
     FILE * file = NULL;
     fopen_s(&file, fileName, "r");
     if (!file) return NULL;
 
-    std::multiset<int>* result = new std::multiset<int>[200];
+    std::multiset<int>* result = new std::multiset<int>[amountOfNodes];
 
     char c = fgetc(file);
     int readInt = 0;

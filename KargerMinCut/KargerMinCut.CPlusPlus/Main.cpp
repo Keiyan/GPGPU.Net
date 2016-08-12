@@ -10,7 +10,7 @@ int _tmain(int argc, _TCHAR* argv [])
     auto start = GetTimeMs64();
    
     std::vector<int> results;
-    parallel_for(0, 200*200*3, 1, [&results](int i){
+    parallel_for(0, 65535, 1, [&results](int i){
         auto graph = ReadFile("kargerMinCut.txt");
         results.push_back(Contract(graph));
         delete [] graph;
@@ -25,7 +25,7 @@ int _tmain(int argc, _TCHAR* argv [])
     auto stop = GetTimeMs64();
 
     std::cout << "Edge count is " << result << std::endl;
-    std::cout << "Time is " << (stop - start) * 100 << " nanoseconds" << std::endl;
+    std::cout << "Time is " << (stop - start) / 10000 << " milliseconds" << std::endl;
 
     return results[0];
 }

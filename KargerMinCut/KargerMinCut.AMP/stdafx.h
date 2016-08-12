@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <set>
 #include <random>
+#include <amp.h>
+#include <ppl.h>
 
 
 

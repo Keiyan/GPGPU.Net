@@ -2,13 +2,8 @@
 
 #include "stdafx.h"
 
+std::multiset<int>* ReadFile(const char * fileName, size_t amountOfNodes);
 
-std::multiset<int>* ReadFile(const char * fileName);
+int * FlattenGraph(std::multiset<int>* graph, size_t amountOfNodes, size_t & width);
 
 long long GetTimeMs64();
-
-int Contract(std::multiset<int>* toContract);
-
-void Merge(std::multiset<int>* data, int a, int b);
-
-void FindEdge(std::multiset<int>* data, int & a, int & b);
