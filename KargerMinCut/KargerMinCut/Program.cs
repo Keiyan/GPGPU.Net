@@ -12,10 +12,12 @@ namespace KargerMinCut
     {
         static int Main(string[] args)
         {
+            var amountOfNodes = ReadFile("kargerMinCut.txt").Count;
+
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var iterationCount = 65535;
+            var iterationCount = amountOfNodes * amountOfNodes * 3;
             List<int> results = new List<int>();
             Parallel.For(0, iterationCount, i =>
             {

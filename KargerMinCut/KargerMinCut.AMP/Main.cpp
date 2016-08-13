@@ -6,7 +6,6 @@ using namespace concurrency;
 
 const size_t amountOfNodes = 200;
 
-
 int Contract(const array_view<int, 2> & data, size_t height, size_t width, tinymt random) restrict(amp)
 {
 	int redirections[amountOfNodes];
@@ -72,7 +71,7 @@ int Contract(const array_view<int, 2> & data, size_t height, size_t width, tinym
 
 int _tmain(int argc, _TCHAR* argv [])
 {
-	int iterationCount = 65535;//amountOfNodes * amountOfNodes * 3;
+	int iterationCount = amountOfNodes * amountOfNodes * 3;
 
     auto start = GetTimeMs64();
 
@@ -86,11 +85,17 @@ int _tmain(int argc, _TCHAR* argv [])
 	int* results = new int[iterationCount]();
 	array_view<int> gpuResults(iterationCount,results);
 
-	tinymt_collection<1> random(gpuResults.extent, 54841);
+	extent<1> e_size(65535);
+	tinymt_collection<1> random(e_size);
+	extent<1> seedSize(1);
+	tinymt_collection<1> seed(seedSize, 0);
+	index<1> seedIndex(0);
 
 	parallel_for_each(gpuResults.extent, 
 		[=](index<1> i) restrict(amp){
-			auto t = random[i];
+			auto t = random[i % e_size.size()];
+
+			t.initialize(seed[seedIndex].next_uint());
 
 			gpuResults[i] = Contract(gpuData, amountOfNodes, width, t);
     });

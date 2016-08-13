@@ -6,20 +6,20 @@
 
 using namespace std;
 
-int Contract(std::vector<int>* toContract)
+int Contract(std::vector<int>* toContract, size_t amountOfNodes)
 {
-    int a = 0, b = 0, count = 200;
+    int a = 0, b = 0, count = amountOfNodes;
     while (count > 2)
     {
-        FindEdge(toContract, a, b);
-        Merge(toContract, a, b);
+        FindEdge(toContract, a, b, amountOfNodes);
+        Merge(toContract, a, b, amountOfNodes);
         --count;
     }
 
     return toContract[a].size();
 }
 
-void Merge(std::vector<int>* data, int a, int b)
+void Merge(std::vector<int>* data, int a, int b, size_t amountOfNodes)
 {
 	data[a].erase(std::remove(data[a].begin(), data[a].end(), b), data[a].end());
 	for (auto i = data[b].begin(); i < data[b].end(); i++)
@@ -31,7 +31,7 @@ void Merge(std::vector<int>* data, int a, int b)
 	}
     data[b].clear();
 
-    for (size_t i = 0; i < 200; i++)
+    for (size_t i = 0; i < amountOfNodes; i++)
     {
         int amount = 0;
         for (auto iter = data[i].begin(); iter != data[i].end(); iter++)
@@ -44,11 +44,11 @@ void Merge(std::vector<int>* data, int a, int b)
     }
 }
 
-void FindEdge(std::vector<int>* data, int & a, int & b)
+void FindEdge(std::vector<int>* data, int & a, int & b, size_t amountOfNodes)
 {
     static random_device dev;
     static default_random_engine e{ dev() };
-    static uniform_int_distribution<int> d{ 0, 199 };
+    static uniform_int_distribution<int> d{ 0, (int)amountOfNodes };
     do
     {
         a = d(e);

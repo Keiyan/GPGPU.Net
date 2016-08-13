@@ -5,14 +5,17 @@
 
 using namespace concurrency;
 
+const size_t amountOfNodes = 200;
+
 int _tmain(int argc, _TCHAR* argv [])
 {
+	int iteractionCount = amountOfNodes * amountOfNodes * 3;
     auto start = GetTimeMs64();
    
     std::vector<int> results;
-    parallel_for(0, 65535, 1, [&results](int i){
-        auto graph = ReadFile("kargerMinCut.txt");
-        results.push_back(Contract(graph));
+    parallel_for(0, iteractionCount, 1, [&results](int i){
+        auto graph = ReadFile("kargerMinCut.txt", amountOfNodes);
+        results.push_back(Contract(graph, amountOfNodes));
         delete [] graph;
     });
 

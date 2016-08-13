@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "MinCutProblem.h"
 
-std::vector<int>* ReadFile(const char * fileName)
+std::vector<int>* ReadFile(const char * fileName, size_t amountOfNodes)
 {
     FILE * file = NULL;
     fopen_s(&file, fileName, "r");
     if (!file) return NULL;
 
-	std::vector<int>* result = new std::vector<int>[200];
+	std::vector<int>* result = new std::vector<int>[amountOfNodes];
 
     char c = fgetc(file);
     int readInt = 0;
