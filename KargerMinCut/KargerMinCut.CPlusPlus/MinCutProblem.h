@@ -3,12 +3,12 @@
 #include "stdafx.h"
 
 
-std::multiset<int>* ReadFile(const char * fileName);
+std::vector<int>* ReadFile(const char * fileName);
 
 long long GetTimeMs64();
 
-int Contract(std::multiset<int>* toContract);
+int Contract(std::vector<int>* toContract);
 
-void Merge(std::multiset<int>* data, int a, int b);
+void Merge(std::vector<int>* data, int a, int b);
 
-void FindEdge(std::multiset<int>* data, int & a, int & b);
+void FindEdge(std::vector<int>* data, int & a, int & b);

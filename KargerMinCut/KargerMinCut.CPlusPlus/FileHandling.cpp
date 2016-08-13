@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "MinCutProblem.h"
 
-std::multiset<int>* ReadFile(const char * fileName)
+std::vector<int>* ReadFile(const char * fileName)
 {
     FILE * file = NULL;
     fopen_s(&file, fileName, "r");
     if (!file) return NULL;
 
-    std::multiset<int>* result = new std::multiset<int>[200];
+	std::vector<int>* result = new std::vector<int>[200];
 
     char c = fgetc(file);
     int readInt = 0;
@@ -29,7 +29,7 @@ std::multiset<int>* ReadFile(const char * fileName)
             }
             else
             {
-                result[VerticeId].insert(readInt - 1);
+                result[VerticeId].push_back(readInt - 1);
             }
             readInt = 0;
             startOfLine = false;

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int Contract(std::multiset<int>* toContract)
+int Contract(std::vector<int>* toContract)
 {
     int a = 0, b = 0, count = 200;
     while (count > 2)
@@ -19,31 +19,32 @@ int Contract(std::multiset<int>* toContract)
     return toContract[a].size();
 }
 
-void Merge(std::multiset<int>* data, int a, int b)
+void Merge(std::vector<int>* data, int a, int b)
 {
-    data[a].insert(data[b].begin(), data[b].end());
+	data[a].erase(std::remove(data[a].begin(), data[a].end(), b), data[a].end());
+	for (auto i = data[b].begin(); i < data[b].end(); i++)
+	{
+		if (*i != a)
+		{
+			data[a].push_back(*i);
+		}
+	}
     data[b].clear();
 
     for (size_t i = 0; i < 200; i++)
     {
         int amount = 0;
-        for (auto iter = data[i].begin(); iter != data[i].end();)
+        for (auto iter = data[i].begin(); iter != data[i].end(); iter++)
         {
-            if (*iter == b || *iter == a)
+            if (*iter == b)
             {
-                data[i].erase(iter++);
-                if (i != a) ++amount;
+				*iter = a;
             }
-            else ++iter;
-        }
-        while (--amount >= 0)
-        {
-            data[i].insert(a);
         }
     }
 }
 
-void FindEdge(std::multiset<int>* data, int & a, int & b)
+void FindEdge(std::vector<int>* data, int & a, int & b)
 {
     static random_device dev;
     static default_random_engine e{ dev() };
