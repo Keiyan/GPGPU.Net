@@ -9,15 +9,18 @@ const size_t amountOfNodes = 200;
 
 int _tmain(int argc, _TCHAR* argv [])
 {
-	int iteractionCount = amountOfNodes * amountOfNodes * 3;
+    int iterationCount = 1;//amountOfNodes * amountOfNodes * 3;
     auto start = GetTimeMs64();
    
-    std::vector<int> results;
-    parallel_for(0, iteractionCount, 1, [&results](int i){
-        auto graph = ReadFile("kargerMinCut.txt", amountOfNodes);
-        results.push_back(Contract(graph, amountOfNodes));
-        delete [] graph;
+    size_t width = 0;
+    auto graph = ReadFile("kargerMinCut.txt", amountOfNodes, width);
+
+    std::vector<int> results(iterationCount);
+    parallel_for(0, iterationCount, 1, [&results, &graph, width](int i){
+        results.push_back(Contract(graph, amountOfNodes, width));
     });
+
+    delete[] graph;
 
     int result = INT_MAX;
     std::for_each(results.begin(), results.end(), [&result](int val)
@@ -27,6 +30,7 @@ int _tmain(int argc, _TCHAR* argv [])
 
     auto stop = GetTimeMs64();
 
+    std::cout << "Performed " << iterationCount << " iterations" << std::endl;
     std::cout << "Edge count is " << result << std::endl;
     std::cout << "Time is " << (stop - start) / 10000 << " milliseconds" << std::endl;
 

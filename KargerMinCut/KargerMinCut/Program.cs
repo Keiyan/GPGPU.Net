@@ -27,6 +27,7 @@ namespace KargerMinCut
 
             watch.Stop();
 
+            Console.WriteLine("Performed " + iterationCount + " iterations");
             Console.WriteLine("Edge count is " + results.Min());
             Console.WriteLine("Time is " + watch.ElapsedMilliseconds + " milliseconds");
 
@@ -47,6 +48,13 @@ namespace KargerMinCut
 
         private static void Merge(IList<IList<int>> data, int a, int b)
         {
+            while (data[a].Contains(b)) { data[a].Remove(b); }
+            for (int i = 0; i < data[b].Count; i++)
+            {
+                if (data[b][i] != a) data[a].Add(data[b][i]);
+            }
+            data[b].Clear();
+
             for (int i = 0; i < data.Count; i++)
             {
                 for (int j = 0; j < data[i].Count; j++)
@@ -54,11 +62,6 @@ namespace KargerMinCut
                     if (data[i][j] == b) data[i][j] = a;
                 }
             }
-            foreach (var item in data[b])
-            {
-                if(item != a) data[a].Add(item);
-            }
-            data[b].Clear();
         }
 
         private static Random r = new Random();
@@ -77,11 +80,14 @@ namespace KargerMinCut
             List<IList<int>> result = new List<IList<int>>();
             using (var stream = File.OpenText(fileName))
             {
-                var elements = stream.ReadLine().Split('\t');
-                result.Add(new List<int>());
-                for (int i = 1; i < elements.Length - 1; i++)
+                while (!stream.EndOfStream)
                 {
-                    result.Last().Add(int.Parse(elements[i]));
+                    var elements = stream.ReadLine().Split('\t');
+                    result.Add(new List<int>());
+                    for (int i = 1; i < elements.Length - 1; i++)
+                    {
+                        result.Last().Add(int.Parse(elements[i]) - 1);
+                    }
                 }
             }
 
