@@ -1,8 +1,10 @@
 #pragma once
+#pragma comment(lib,"d3d11.lib")
 
 #include "stdafx.h"
 #include "utils.h"
 #include "rnd\amp_tinymt_rng.h"
+#include <d3d11.h>
 
 using namespace concurrency;
 
@@ -10,102 +12,134 @@ const int amountOfNodes = 200;
 
 int Contract(const array_view<int, 2> & data, int height, int  width, tinymt random) restrict(amp)
 {
-	int redirections[amountOfNodes];
-	int validDestinations[amountOfNodes];
-	for (int  i = 0; i < height; i++)
-	{
-		redirections[i] = i;
-		validDestinations[i] = -1;
-	}
+    int redirections[amountOfNodes];
+    int validDestinations[amountOfNodes];
+    for (int  i = 0; i < height; i++)
+    {
+        redirections[i] = i;
+        validDestinations[i] = -1;
+    }
 
 
-	for (int  loop = 0; loop < height - 2; loop++)
-	{
-		unsigned int source, destination;
+    for (int  loop = 0; loop < height - 2; loop++)
+    {
+        unsigned int source, destination;
 
-		do
-		{
-			source = (random.next_uint() - 1) % height;
-		} while (redirections[source] != source);
+        do
+        {
+            source = (random.next_uint() - 1) % height;
+        } while (redirections[source] != source);
 
-		int rank = 0;
-		for (int  i = 0; i < height; i++)
-		{
-			if (redirections[i] == source)
-			{
-				for (int  j = 0; j < width; j++)
-				{
-					auto local = data[i][j];
-					if (local == -1) break;
+        int rank = 0;
+        for (int  i = 0; i < height; i++)
+        {
+            if (redirections[i] == source)
+            {
+                for (int  j = 0; j < width; j++)
+                {
+                    auto local = data[i][j];
+                    if (local == -1) break;
 
-					auto mappedLocal = redirections[local];
-					if (mappedLocal != source
-						&& validDestinations[mappedLocal] == -1)
-					{
-						validDestinations[mappedLocal] = 1;
-						rank++;
-					}
-				}
-			}
-		}
+                    auto mappedLocal = redirections[local];
+                    if (mappedLocal != source
+                        && validDestinations[mappedLocal] == -1)
+                    {
+                        validDestinations[mappedLocal] = 1;
+                        rank++;
+                    }
+                }
+            }
+        }
 
-		int destIndex = (random.next_uint() - 1) % rank;
-		for (int i = 0; i < height; i++)
-		{
-			if (validDestinations[i] > -1)
-			{
-				if (destIndex == 0) destination = i;
-				--destIndex;
-				validDestinations[i] = -1;
-			}
-		}
+        int destIndex = (random.next_uint() - 1) % rank;
+        for (int i = 0; i < height; i++)
+        {
+            if (validDestinations[i] > -1)
+            {
+                if (destIndex == 0) destination = i;
+                --destIndex;
+                validDestinations[i] = -1;
+            }
+        }
 
-		for (int  i = 0; i < height; i++)
-		{
-			if (redirections[i] == source)
-			{
-				redirections[i] = destination;
-			}
-		}
-	}
+        for (int  i = 0; i < height; i++)
+        {
+            if (redirections[i] == source)
+            {
+                redirections[i] = destination;
+            }
+        }
+    }
 
-	int result = 0;
-	int nodeValue = redirections[0];
-	for (int  i = 0; i < height; i++)
-	{
-		if (redirections[i] == nodeValue)
-			for (int  j = 0; j < width; j++)
-			{
-				auto local = data[i][j];
-				if (local != -1 && redirections[local] != nodeValue) ++result;
-			}
-	}
-	return result;
+    int result = 0;
+    int nodeValue = redirections[0];
+    for (int  i = 0; i < height; i++)
+    {
+        if (redirections[i] == nodeValue)
+            for (int  j = 0; j < width; j++)
+            {
+                auto local = data[i][j];
+                if (local != -1 && redirections[local] != nodeValue) ++result;
+            }
+    }
+    return result;
+}
+
+accelerator_view CreateNoTDRAccellerator()
+{
+    unsigned int createDeviceFlags = D3D11_CREATE_DEVICE_DISABLE_GPU_TIMEOUT;
+    ID3D11Device *pDevice;
+    ID3D11DeviceContext *pContext;
+    D3D_FEATURE_LEVEL featureLevel;
+    HRESULT hr = D3D11CreateDevice(NULL,
+        D3D_DRIVER_TYPE_UNKNOWN,
+        NULL,
+        createDeviceFlags,
+        NULL,
+        0,
+        D3D11_SDK_VERSION,
+        &pDevice,
+        &featureLevel,
+        &pContext);
+
+    if (FAILED(hr) ||
+        ((featureLevel != D3D_FEATURE_LEVEL_11_1) &&
+        (featureLevel != D3D_FEATURE_LEVEL_11_0)))
+    {
+        std::cerr << "Failed to create Direct3D 11 device with HRESULT " << hr << std::endl;
+        throw "Failed to create Direct3D device";
+    }
+
+
+    return concurrency::direct3d::create_accelerator_view(pDevice);
 }
 
 void GpuMinCut(std::vector<std::vector<int>> graph, size_t iterationCount, size_t height, size_t width, std::vector<int> & results)
 {
-	auto data = FlattenGraph(graph, width);
+    auto data = FlattenGraph(graph, width);
 
-	array_view<int, 2> gpuData(height, width, data);
+    //accelerator_view accelerator = CreateNoTDRAccellerator();
 
-	results.resize(iterationCount);
-	array_view<int> gpuResults(iterationCount, results);
+    array_view<int, 2> gpuData(height, width, data);
 
-	extent<1> e_size(65535);
-	tinymt_collection<1> random(e_size);
-	extent<1> seedSize(1);
-	tinymt_collection<1> seed(seedSize, 0);
-	index<1> seedIndex(0);
+    results.resize(iterationCount);
+    array_view<int> gpuResults(iterationCount, results);
 
-	parallel_for_each(gpuResults.extent,
-		[=](index<1> i) restrict(amp) {
-		auto t = random[i % e_size.size()];
+    concurrency::extent<1> e_size(65535);
+    tinymt_collection<1> random(e_size);
+    concurrency::extent<1> seedSize(1);
+    tinymt_collection<1> seed(seedSize, 0);
+    index<1> seedIndex(0);
 
-		t.initialize(seed[seedIndex].next_uint());
+    parallel_for_each( 
+        gpuResults.extent,
+        [=](index<1> i) restrict(amp) {
+        auto t = random[i % e_size.size()];
 
-		gpuResults[i] = Contract(gpuData, (int)height, (int)width, t);
-	});
+        t.initialize(seed[seedIndex].next_uint());
 
-	gpuResults.synchronize();
+        gpuResults[i] = Contract(gpuData, (int)height, (int)width, t);
+    });
+
+    gpuResults.synchronize();
 }
