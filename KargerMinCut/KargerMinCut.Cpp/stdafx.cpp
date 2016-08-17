@@ -1,5 +1,5 @@
 // stdafx.cpp : source file that includes just the standard includes
-// MinCutProblem.pch will be the pre-compiled header
+// KargerMinCut.Cpp.pch will be the pre-compiled header
 // stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"

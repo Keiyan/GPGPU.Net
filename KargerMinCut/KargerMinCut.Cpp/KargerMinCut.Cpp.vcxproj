@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D4541DA0-C0BB-4A42-A9D3-2E32348018E0}</ProjectGuid>
+    <ProjectGuid>{688282EA-6D5B-4BA6-982E-450B42875C3E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>KargerMinCutAMP</RootNamespace>
+    <RootNamespace>KargerMinCutCpp</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -97,7 +97,7 @@
       <Command>copy "$(ProjectDir)\*.txt" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy data to output</Message>
+      <Message>Copy data files</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -112,6 +112,12 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(ProjectDir)\*.txt" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy data files</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -133,7 +139,7 @@
       <Command>copy "$(ProjectDir)\*.txt" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy data to output</Message>
+      <Message>Copy data files</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,33 +158,37 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(ProjectDir)\*.txt" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy data files</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="kargerMinCut.txt" />
-    <Text Include="ReadMe.txt" />
-    <Text Include="Test.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="MinCutProblem.h" />
+    <ClInclude Include="cpu.h" />
+    <ClInclude Include="gpu.h" />
     <ClInclude Include="rnd\amp_rand_collection.h" />
     <ClInclude Include="rnd\amp_sobol_rng.h" />
     <ClInclude Include="rnd\amp_tinymt_rng.h" />
     <ClInclude Include="rnd\xxamp_sobol_rng.h" />
     <ClInclude Include="rnd\xxamp_tinymt_precalc_dc.h" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileHandling.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MinCutProblem.cpp" />
+    <ClCompile Include="KargerMinCut.Cpp.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="kargerMinCut.txt" />
+    <Text Include="Test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

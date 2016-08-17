@@ -8,15 +8,17 @@
 #include "targetver.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <tchar.h>
-#include <iostream>
+#include <string.h>
 #include <Windows.h>
-#include <algorithm>
-#include <set>
-#include <random>
 #include <amp.h>
 #include <ppl.h>
 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
 
 
 // TODO: reference additional headers your program requires here
