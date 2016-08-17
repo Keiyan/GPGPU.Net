@@ -91,12 +91,21 @@ accelerator_view CreateNoTDRAccellerator()
     ID3D11Device *pDevice;
     ID3D11DeviceContext *pContext;
     D3D_FEATURE_LEVEL featureLevel;
-    HRESULT hr = D3D11CreateDevice(NULL,
-        D3D_DRIVER_TYPE_UNKNOWN,
+    D3D_FEATURE_LEVEL featureLevels[] =
+    {
+        D3D_FEATURE_LEVEL_11_1,
+        D3D_FEATURE_LEVEL_11_0,
+        D3D_FEATURE_LEVEL_10_1,
+        D3D_FEATURE_LEVEL_10_0,
+        D3D_FEATURE_LEVEL_9_3,
+        D3D_FEATURE_LEVEL_9_1
+    };
+    HRESULT hr = D3D11CreateDevice(nullptr,
+        D3D_DRIVER_TYPE_HARDWARE,
         NULL,
         createDeviceFlags,
-        NULL,
-        0,
+        featureLevels,
+        ARRAYSIZE(featureLevels),
         D3D11_SDK_VERSION,
         &pDevice,
         &featureLevel,
@@ -118,7 +127,7 @@ void GpuMinCut(std::vector<std::vector<int>> graph, size_t iterationCount, size_
 {
     auto data = FlattenGraph(graph, width);
 
-    //accelerator_view accelerator = CreateNoTDRAccellerator();
+    accelerator_view accelerator = CreateNoTDRAccellerator();
 
     array_view<int, 2> gpuData(height, width, data);
 
@@ -131,7 +140,7 @@ void GpuMinCut(std::vector<std::vector<int>> graph, size_t iterationCount, size_
     tinymt_collection<1> seed(seedSize, 0);
     index<1> seedIndex(0);
 
-    parallel_for_each( 
+    parallel_for_each(accelerator,
         gpuResults.extent,
         [=](index<1> i) restrict(amp) {
         auto t = random[i % e_size.size()];
