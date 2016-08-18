@@ -25,10 +25,16 @@ int Contract(const array_view<int, 2> & data, int height, int  width, tinymt ran
     {
         unsigned int source, destination;
 
-        do
+        int sourceIndex = (random.next_uint() - 1) % (height-loop);
+        for (int i = 0; i < height; i++)
         {
-            source = (random.next_uint() - 1) % height;
-        } while (redirections[source] != source);
+            if (sourceIndex == 0)
+            {
+                source = i;
+                break;
+            }
+            if (redirections[i] == i) --sourceIndex;
+        }
 
         int rank = 0;
         for (int  i = 0; i < height; i++)
@@ -88,9 +94,9 @@ int Contract(const array_view<int, 2> & data, int height, int  width, tinymt ran
 accelerator_view CreateNoTDRAccellerator()
 {
     unsigned int createDeviceFlags = D3D11_CREATE_DEVICE_DISABLE_GPU_TIMEOUT;
-    ID3D11Device *pDevice;
     ID3D11DeviceContext *pContext;
     D3D_FEATURE_LEVEL featureLevel;
+    ID3D11Device *pDevice;
     D3D_FEATURE_LEVEL featureLevels[] =
     {
         D3D_FEATURE_LEVEL_11_1,
@@ -140,7 +146,7 @@ void GpuMinCut(std::vector<std::vector<int>> graph, size_t iterationCount, size_
     tinymt_collection<1> seed(seedSize, 0);
     index<1> seedIndex(0);
 
-    parallel_for_each(accelerator,
+    parallel_for_each(//accelerator,
         gpuResults.extent,
         [=](index<1> i) restrict(amp) {
         auto t = random[i % e_size.size()];
@@ -150,5 +156,13 @@ void GpuMinCut(std::vector<std::vector<int>> graph, size_t iterationCount, size_
         gpuResults[i] = Contract(gpuData, (int)height, (int)width, t);
     });
 
-    gpuResults.synchronize();
+    try
+    {
+        gpuResults.synchronize();
+    }
+    catch (accelerator_view_removed& ex)
+    {
+        std::cout << ex.what() << std::endl;
+        std::cout << ex.get_view_removed_reason() << std::endl;
+    }
 }

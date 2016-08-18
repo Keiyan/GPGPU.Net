@@ -9,7 +9,6 @@ int Contract(std::vector<std::vector<int>> & data, int height, int width)
 {
 	static random_device dev;
 	static default_random_engine e{ dev() };
-	static uniform_int_distribution<int> d{ 0, height - 1 };
 
 	std::vector<int> redirections(height);
 	std::vector<int> validDestinations(height);
@@ -24,10 +23,17 @@ int Contract(std::vector<std::vector<int>> & data, int height, int width)
 	{
 		unsigned int source, destination;
 
-		do
-		{
-			source = d(e);
-		} while (redirections[source] != source);
+        uniform_int_distribution<int> d{ 0, height - loop - 1 };
+        int sourceIndex = d(e);
+        for (int i = 0; i < height; i++)
+        {
+            if (sourceIndex == 0)
+            {
+                source = i;
+                break;
+            }
+            if (redirections[i] == i) --sourceIndex;
+        }
 
 		int rank = 0;
 		for (int i = 0; i < height; i++)

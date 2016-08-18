@@ -12,18 +12,34 @@ namespace KargerMinCut
     {
         static int Main(string[] args)
         {
-            var amountOfNodes = ReadFile("kargerMinCut.txt").Count;
+            if (args.Length != 2)
+            {
+                Console.WriteLine("Usage : ");
+                Console.WriteLine("	KargerMinCut.exe -cpu graphFileName for the CPU version");
+                Console.WriteLine("	KargerMinCut.exe -gpu graphFileName for the GPGPU version");
+
+                return -1;
+            }
+
+            bool cpu = args[0] == "-cpu";
+            string fileName = args[1];
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
+            var graph = ReadFile(fileName);
+            var amountOfNodes = graph.Count;
             var iterationCount = amountOfNodes * amountOfNodes * 3;
-            List<int> results = new List<int>();
-            Parallel.For(0, iterationCount, i =>
+            List<int> results = new List<int>(iterationCount);
+
+            if (cpu)
             {
-                var data = ReadFile("kargerMinCut.txt");
-                results.Add(Contract(data));
-            });
+                new Cpu().GetMinCut(graph, results, iterationCount);
+            }
+            else
+            {
+
+            }
 
             watch.Stop();
 
@@ -32,47 +48,6 @@ namespace KargerMinCut
             Console.WriteLine("Time is " + watch.ElapsedMilliseconds + " milliseconds");
 
             return results.Min();
-        }
-
-        private static int Contract(IList<IList<int>> data)
-        {
-            int a = 0, b = 0;
-            for (int i = 0; i < data.Count - 2; i++)
-            {
-                FindEdge(data, ref a, ref b);
-                Merge(data, a, b);
-            }
-
-            return data[a].Count;
-        }
-
-        private static void Merge(IList<IList<int>> data, int a, int b)
-        {
-            while (data[a].Contains(b)) { data[a].Remove(b); }
-            for (int i = 0; i < data[b].Count; i++)
-            {
-                if (data[b][i] != a) data[a].Add(data[b][i]);
-            }
-            data[b].Clear();
-
-            for (int i = 0; i < data.Count; i++)
-            {
-                for (int j = 0; j < data[i].Count; j++)
-                {
-                    if (data[i][j] == b) data[i][j] = a;
-                }
-            }
-        }
-
-        private static Random r = new Random();
-        private static void FindEdge(IList<IList<int>> data, ref int a, ref int b)
-        {
-            do
-            {
-                a = r.Next(data.Count);
-            } while (data[a].Count == 0);
-
-            b = data[a][r.Next(data[a].Count)];
         }
 
         static private IList<IList<int>> ReadFile (string fileName)
