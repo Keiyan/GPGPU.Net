@@ -37,7 +37,7 @@ namespace KargerMinCut
                 var sourceIndex = this._rnd.Next(height - loop);
                 for (int i = 0; i < height; i++)
                 {
-                    if (sourceIndex == 0)
+                    if (sourceIndex == 0 && redirections[i] == i)
                     {
                         source = i;
                         break;

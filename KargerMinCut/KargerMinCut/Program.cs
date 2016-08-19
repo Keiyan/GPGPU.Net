@@ -38,7 +38,7 @@ namespace KargerMinCut
             }
             else
             {
-
+                new Gpu().GetMinCut(graph, results, iterationCount);
             }
 
             watch.Stop();

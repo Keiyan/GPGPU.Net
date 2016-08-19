@@ -28,7 +28,7 @@ int Contract(const array_view<int, 2> & data, int height, int  width, tinymt ran
         int sourceIndex = (random.next_uint() - 1) % (height-loop);
         for (int i = 0; i < height; i++)
         {
-            if (sourceIndex == 0)
+            if (sourceIndex == 0 && redirections[i] == i)
             {
                 source = i;
                 break;
@@ -129,7 +129,7 @@ accelerator_view CreateNoTDRAccellerator()
     return concurrency::direct3d::create_accelerator_view(pDevice);
 }
 
-void GpuMinCut(std::vector<std::vector<int>> graph, size_t iterationCount, size_t height, size_t width, std::vector<int> & results)
+void GpuMinCut(std::vector<std::vector<int>> graph, int iterationCount, int height, int width, std::vector<int> & results)
 {
     auto data = FlattenGraph(graph, width);
 

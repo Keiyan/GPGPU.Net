@@ -72,9 +72,9 @@
 #include "amp_rand_collection.h"
 #include "xxamp_tinymt_precalc_dc.h"
 
-#if defined (_M_X64)
-    #error ERROR: This sample may not produce valid results on x64/amd64 platform.
-#endif 
+//#if defined (_M_X64)
+//    #error ERROR: This sample may not produce valid results on x64/amd64 platform.
+//#endif 
 
 /// This is the class implementing tinyMT engine
 class tinymt

@@ -4,7 +4,7 @@
 
 using namespace concurrency;
 
-std::vector<std::vector<int>> ReadFile(std::string & fileName, size_t & width)
+std::vector<std::vector<int>> ReadFile(std::string & fileName, int & width)
 {
 	FILE * file = NULL;
 	fopen_s(&file, fileName.c_str(), "r");
@@ -16,7 +16,7 @@ std::vector<std::vector<int>> ReadFile(std::string & fileName, size_t & width)
 	int readInt = 0;
 	bool startOfLine = true;
 	int VerticeId = 0;
-	size_t lineWidth = 0;
+	int lineWidth = 0;
 	while (c != EOF)
 	{
 		if (c == '\n')

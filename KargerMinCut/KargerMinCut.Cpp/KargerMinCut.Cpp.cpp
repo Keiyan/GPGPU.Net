@@ -22,10 +22,10 @@ int main(int argc, char* argv[])
 
 	auto start = GetTimeMs64();
 
-	size_t width = 0;
+	int width = 0;
 	auto graph = ReadFile(fileName, width);
-	size_t amountOfNodes = graph.size();
-	size_t iterationCount = amountOfNodes * amountOfNodes * 3;
+	int amountOfNodes = (int)graph.size();
+	int iterationCount = amountOfNodes * amountOfNodes * 3;
 
 	std::vector<int> results(iterationCount);
 
