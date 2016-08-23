@@ -8,7 +8,7 @@
 
 using namespace concurrency;
 
-const int amountOfNodes = 200;
+const int amountOfNodes = 500;
 
 int Contract(const array_view<int, 2> & data, int height, int  width, tinymt random) restrict(amp)
 {
